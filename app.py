@@ -26,11 +26,18 @@ expander = st.expander('Notion settings')
 values = read_values()
 
 token = expander.text_input('Token', key="token", value=values["token"] or "", on_change=save_values)
+expander.subheader('How to get token?')
+expander.markdown('Go to https://www.notion.so/my-integrations and create a new integration. There you will find a Internal Integration Secret that will be your token.')
+expander.markdown('Do not forgot to add connection to your page! In the notion page with the calendar go to ••• ➔ Connections ➔ Add connection ➔ Find your integration and add it.')
+expander.markdown("""---""")
 database_id = expander.text_input(
     'Database ID', key="database_id", value=values["database_id"] or "", on_change=save_values
 )
+expander.subheader('How to get database ID?')
+expander.markdown('1. Go to your notion page with the calendar and check the url. The url should be something like https://www.notion.so/thienqc/f1077c8a72444493bd8c7ffe5b79aa92?v=833710c1e5604896af93616995f9b26f.')
+expander.write('2. The database ID from example is :red[f1077c8a72444493bd8c7ffe5b79aa92].')
 
-st.write()
+
 
 sentence = st.text_input('Enter a sentence with the word to memorize. Highlight the word with ** on both sides.')
 date = st.date_input('Enter first date to memorize')
