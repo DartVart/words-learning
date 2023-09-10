@@ -36,8 +36,8 @@ sentence = st.text_input('Enter a sentence with the word to memorize. Highlight 
 date = st.date_input('Enter first date to memorize')
 
 if st.button("Write"):
-    res = add_sentence(sentence, date, database_id, token)
-    if res.status_code == 200:
+    status_code = add_sentence(sentence, date, database_id, token)
+    if status_code == 200:
         st.success(f'Your sentence "{sentence}" has been written!')
     else:
         st.error('Something went wrong')

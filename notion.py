@@ -1,3 +1,4 @@
+import datetime
 import json
 from copy import deepcopy
 
@@ -76,7 +77,7 @@ def create_page(date, database_id, token):
     return res.json()["id"]
 
 
-def add_sentence(sentence, datetime_obj, database_id, token):
+def add_sentence_to_one_day(sentence, datetime_obj, database_id, token):
     date = datetime_obj.strftime('%Y-%m-%d')
     page_id = get_page_id(date, database_id, token)
     if page_id is None:
@@ -96,3 +97,12 @@ def add_sentence(sentence, datetime_obj, database_id, token):
     }
     data = json.dumps(new_block)
     return requests.request("PATCH", update_url, headers=get_headers(token), data=data)
+
+
+def add_sentence(sentence, datetime_obj, database_id, token):
+    for day_addition in range(7):
+        add_sentence_to_one_day(sentence, datetime_obj + datetime.timedelta(days=day_addition), database_id, token)
+
+    add_sentence_to_one_day(sentence, datetime_obj + datetime.timedelta(days=14), database_id, token)
+    res = add_sentence_to_one_day(sentence, datetime_obj + datetime.timedelta(days=28), database_id, token)
+    return res.status_code
