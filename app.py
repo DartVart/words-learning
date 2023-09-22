@@ -1,6 +1,7 @@
 import streamlit as st
 
-from notion import add_sentence
+from utils.notion import add_sentence
+from utils.text_processing import split_to_sentences
 
 
 def read_values():
@@ -37,14 +38,16 @@ expander.subheader('How to get database ID?')
 expander.markdown('1. Go to your notion page with the calendar and check the url. The url should be something like https://www.notion.so/thienqc/f1077c8a72444493bd8c7ffe5b79aa92?v=833710c1e5604896af93616995f9b26f.')
 expander.write('2. The database ID from example is :red[f1077c8a72444493bd8c7ffe5b79aa92].')
 
-
-
-sentence = st.text_input('Enter a sentence with the word to memorize. Highlight the word with ** on both sides.')
+text = st.text_area('Enter sentences with the words to memorize. Highlight the word with ** on both sides. The sentences will be split automatically and may be separated by punctuation and line breaks.')
 date = st.date_input('Enter first date to memorize')
 
 if st.button("Write"):
-    is_success = add_sentence(sentence, date, database_id, token)
-    if is_success:
-        st.success(f'Your sentence "{sentence}" has been written!')
-    else:
-        st.error('Something went wrong')
+    sentences = split_to_sentences(text)
+    slots = [st.empty() for _ in sentences]
+    for i, sentence in enumerate(sentences):
+        is_success = add_sentence(sentence, date, database_id, token)
+        slot = slots[-(i + 1)]
+        if is_success:
+            slot.success(f'Your sentence "{sentence}" has been written!')
+        else:
+            slot.error(f'Something went wrong when I write "{sentence}"!')
