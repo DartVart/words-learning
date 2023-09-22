@@ -12,9 +12,10 @@ I learned about this method from the [Энциклоп (Entsiclop)](https://www.
 3. Then, **a week later**, you read that sentence again 2-3 times (+ 10 seconds).
 4. Finally, **after 2 weeks**, you last read this sentence 2-3 times (+ 10 seconds).
 5. Congratulations, that word is very well remembered! And it took 90 seconds!
+
 *P.S. It usually still takes me longer than 10 seconds and I do more reps until I realize I've been focused enough.*
 
-# Then what's the point of this app?
+# About app
 
 This app will let you automatically create sentences in your notes that you need to repeat 😊
 
