@@ -1,6 +1,7 @@
 import datetime
 import json
 from copy import deepcopy
+from threading import Thread
 
 import requests
 
@@ -77,7 +78,7 @@ def create_page(date, database_id, token):
     return res.json()["id"]
 
 
-def add_sentence_to_one_day(sentence, datetime_obj, database_id, token):
+def add_sentence_to_one_day(sentence, datetime_obj, database_id, token, result_list):
     date = datetime_obj.strftime('%Y-%m-%d')
     page_id = get_page_id(date, database_id, token)
     if page_id is None:
@@ -96,13 +97,43 @@ def add_sentence_to_one_day(sentence, datetime_obj, database_id, token):
         ]
     }
     data = json.dumps(new_block)
-    return requests.request("PATCH", update_url, headers=get_headers(token), data=data)
+    result_list.append(
+        requests.request("PATCH", update_url, headers=get_headers(token), data=data)
+    )
 
 
 def add_sentence(sentence, datetime_obj, database_id, token):
+    threads = []
+    result_list = []
     for day_addition in range(7):
-        add_sentence_to_one_day(sentence, datetime_obj + datetime.timedelta(days=day_addition), database_id, token)
+        # TODO: Thread? 🤔
+        threads.append(
+            Thread(
+                target=add_sentence_to_one_day,
+                args=[sentence, datetime_obj + datetime.timedelta(days=day_addition), database_id, token, result_list]
+            )
+        )
 
-    add_sentence_to_one_day(sentence, datetime_obj + datetime.timedelta(days=14), database_id, token)
-    res = add_sentence_to_one_day(sentence, datetime_obj + datetime.timedelta(days=28), database_id, token)
-    return res.status_code
+    threads.append(
+        Thread(
+            target=add_sentence_to_one_day,
+            args=[sentence, datetime_obj + datetime.timedelta(days=14), database_id, token, result_list]
+        )
+    )
+    threads.append(
+        Thread(
+            target=add_sentence_to_one_day,
+            args=[sentence, datetime_obj + datetime.timedelta(days=28), database_id, token, result_list]
+        )
+    )
+
+    for thread in threads:
+        thread.start()
+
+    for thread in threads:
+        thread.join()
+
+    for res in result_list:
+        if res.status_code != 200:
+            return False
+    return True
