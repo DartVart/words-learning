@@ -19,7 +19,7 @@ def save_values():
     )
 
 
-st.title('90 Seconds Method')
+st.title('90-Seconds Method')
 st.subheader('Of learning words')
 
 expander = st.expander('Notion settings')

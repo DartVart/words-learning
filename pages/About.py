@@ -1,6 +1,6 @@
 import streamlit as st
 
-st.title('90 Seconds Method')
+st.title('90-Seconds Method')
 st.subheader('Of learning words')
 
 st.markdown('I learned about this method from the [Энциклоп (Entsiclop)](https://www.youtube.com/watch?v=Q8_rLOrt49o&t=2s&ab_channel=%D0%AD%D0%BD%D1%86%D0%B8%D0%BA%D0%BB%D0%BE%D0%BF) video.')
