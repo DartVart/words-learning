@@ -42,12 +42,20 @@ text = st.text_area('Enter sentences with the words to memorize. Highlight the w
 date = st.date_input('Enter first date to memorize')
 
 if st.button("Write"):
-    sentences = split_to_sentences(text)
-    slots = [st.empty() for _ in sentences]
-    for i, sentence in enumerate(sentences):
-        is_success = add_sentence(sentence, date, database_id, token)
-        slot = slots[-(i + 1)]
-        if is_success:
-            slot.success(f'Your sentence "{sentence}" has been written!')
+    if not token:
+        st.error('Enter the **token** in the notion settings!')
+    elif not database_id:
+        st.error('Enter the **database ID** in the notion settings!')
+    else:
+        sentences = split_to_sentences(text)
+        if len(sentences) == 0:
+            st.error("Couldn't recognize a single sentence 😞")
         else:
-            slot.error(f'Something went wrong when I write "{sentence}"!')
+            slots = [st.empty() for _ in sentences]
+            for i, sentence in enumerate(sentences):
+                is_success = add_sentence(sentence, date, database_id, token)
+                slot = slots[-(i + 1)]
+                if is_success:
+                    slot.success(f'Your sentence "{sentence}" has been written!')
+                else:
+                    slot.error(f'Something went wrong when I tried to add "{sentence}" 😞')
