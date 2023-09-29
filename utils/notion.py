@@ -1,5 +1,6 @@
 import datetime
 import json
+import traceback
 from copy import deepcopy
 from threading import Thread
 
@@ -44,7 +45,17 @@ def get_page_id(date, database_id, token):
     try:
         page = next(
             p for p in pages if
-            (p["properties"]["Date"]["date"]["start"] == date and
+            (p and
+             "properties" in p and p["properties"] and
+             "Date" in p["properties"] and p["properties"]["Date"] and
+             "date" in p["properties"]["Date"] and p["properties"]["Date"]["date"] and
+             "start" in p["properties"]["Date"]["date"] and
+             "Name" in p["properties"] and p["properties"]["Name"] and
+             "title" in p["properties"]["Name"] and p["properties"]["Name"]["title"] and
+             len(p["properties"]["Name"]["title"]) > 0 and
+             "text" in p["properties"]["Name"]["title"][0] and p["properties"]["Name"]["title"][0]["text"] and
+             "content" in p["properties"]["Name"]["title"][0]["text"] and
+             p["properties"]["Date"]["date"]["start"] == date and
              p["properties"]["Name"]["title"][0]["text"]["content"] == TITLE)
         )
         return page["id"]
@@ -102,6 +113,7 @@ def add_sentence_to_one_day(sentence, datetime_obj, database_id, token, result_l
             requests.request("PATCH", update_url, headers=get_headers(token), data=data)
         )
     except:
+        print(traceback.format_exc())
         result_list.append(None)
 
 
